@@ -1,5 +1,9 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## ediary project
+
+그릇 프로토 타입용
+
 ## Available Scripts
 
 In the project directory, you can run:
