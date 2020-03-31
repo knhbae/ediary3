@@ -1,0 +1,51 @@
+{
+  "name": "ediary3",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@date-io/date-fns": "1.x",
+    "@material-ui/core": "^4.9.5",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/pickers": "^3.2.10",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "current-week-number": "^1.0.7",
+    "date-fns": "^2.11.0",
+    "express": "^4.17.1",
+    "immer": "^6.0.1",
+    "import": "^0.0.6",
+    "react": "^16.13.0",
+    "react-day-picker": "^7.4.0",
+    "react-dom": "^16.13.0",
+    "react-redux": "^7.2.0",
+    "react-scripts": "3.4.0",
+    "react-swipeable-views": "^0.13.9",
+    "react-swipeable-views-utils": "^0.13.9",
+    "redux": "^4.0.5",
+    "redux-actions": "^2.6.5",
+    "redux-devtools-extension": "^2.13.8"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "proxy": "http://localhost:5000/"
+}
