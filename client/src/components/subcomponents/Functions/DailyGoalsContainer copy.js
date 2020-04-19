@@ -4,20 +4,20 @@ import Grid from "@material-ui/core/Grid";
 
 import Paper from "@material-ui/core/Paper";
 
-import ShowCard from "../components/subcomponents/Functions/ShowCard";
+import ShowCard from "./ShowCard";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    maxWidth: 1300
+    maxWidth: 1300,
   },
   paper: {
     height: 200,
-    width: 200
+    width: 200,
   },
   control: {
-    padding: theme.spacing(2)
-  }
+    padding: theme.spacing(2),
+  },
 }));
 
 export default function SpacingGrid() {
@@ -32,7 +32,7 @@ export default function SpacingGrid() {
     <Grid container className={classes.root} spacing={2}>
       <Grid item xs={12}>
         <Grid container justify="center" spacing={2}>
-          {[0, 1, 2, 3, 4, 5].map(value => (
+          {[0, 1, 2, 3, 4, 5].map((value) => (
             <Grid key={value} item>
               {/* <Paper className={classes.paper} /> */}
               <ShowCard />

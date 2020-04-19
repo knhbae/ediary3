@@ -11,28 +11,29 @@ import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 // import { addISOWeekYears } from "date-fns";
 import currentWeekNumber from "current-week-number";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 500,
-    flexGrow: 1
+    flexGrow: 1,
   },
   header: {
     display: "flex",
     alignItems: "center",
     height: 50,
     paddingLeft: theme.spacing(4),
-    backgroundColor: theme.palette.background.default
+    backgroundColor: theme.palette.background.default,
   },
   img: {
     height: 255,
     maxWidth: 400,
     overflow: "hidden",
     display: "block",
-    width: "100%"
-  }
+    width: "100%",
+  },
 }));
 
 const DailyGoals = ({
+  maxDId,
   items, // select 하기 위한 객체
   dailyinput, // 인풋에 입력되는 객체
   dailygoals, // 할 일 목록이 들어있는 객체
@@ -42,7 +43,7 @@ const DailyGoals = ({
   onRemove,
   onEdit,
   onInitializeForm,
-  onInitiateEditField
+  onInitiateEditField,
 }) => {
   const classes = useStyles();
   const theme = useTheme();
@@ -58,16 +59,16 @@ const DailyGoals = ({
   const maxSteps = 1000;
 
   const handleNext = () => {
-    setActiveStep(prevActiveStep => prevActiveStep + 1);
-    setActiveWeek(prevActiveWeek => addWeek(prevActiveWeek));
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setActiveWeek((prevActiveWeek) => addWeek(prevActiveWeek));
   };
 
   const handleBack = () => {
-    setActiveStep(prevActiveStep => prevActiveStep - 1);
-    setActiveWeek(prevActiveWeek => minusWeek(prevActiveWeek));
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    setActiveWeek((prevActiveWeek) => minusWeek(prevActiveWeek));
   };
 
-  const addWeek = prevYyyyww => {
+  const addWeek = (prevYyyyww) => {
     const prevYyyy = prevYyyyww.substring(0, 4) * 1;
     const prevWw = prevYyyyww.substring(5, 7) * 1;
     let nextWw = prevWw === 52 ? 1 : prevWw + 1;
@@ -80,7 +81,7 @@ const DailyGoals = ({
     return nextYyyyww;
   };
 
-  const minusWeek = prevYyyyww => {
+  const minusWeek = (prevYyyyww) => {
     const prevYyyy = prevYyyyww.substring(0, 4) * 1;
     const prevWw = prevYyyyww.substring(5, 7) * 1;
     let nextWw = prevWw === 1 ? 52 : prevWw - 1;
@@ -92,12 +93,22 @@ const DailyGoals = ({
     return nextYyyyww;
   };
 
-  const thisWeek = thisdate => {
-    let ww = String(currentWeekNumber(thisdate)).padStart(2, "0"); //January is 0!
-    let yyyy = thisdate.substring(0, 4);
+  const thisWeek = (thisdate) => {
+    if (
+      typeof thisdate === "undefined" ||
+      thisdate === null ||
+      thisdate === ""
+    ) {
+      const thisweek = "2020-01-01";
+      return thisweek;
+    } else {
+      let ww = String(currentWeekNumber(thisdate)).padStart(2, "0"); //January is 0!
+      // console.log(thisdate);
+      let yyyy = thisdate.substring(0, 4);
 
-    const thisweek = yyyy + "-" + ww;
-    return thisweek;
+      const thisweek = yyyy + "-" + ww;
+      return thisweek;
+    }
   };
 
   return (
@@ -106,6 +117,7 @@ const DailyGoals = ({
         <Typography>{activeWeek}</Typography>
       </Paper>
       <AddDailyGoals
+        maxDId={maxDId}
         items={items}
         dailyinput={dailyinput}
         activeWeek={activeWeek}
@@ -115,7 +127,7 @@ const DailyGoals = ({
         onInitiateEditField={onInitiateEditField}
       />
       <div>
-        {dailygoals.map(dailygoal => (
+        {dailygoals.map((dailygoal) => (
           <div key={dailygoal.id}>
             {thisWeek(dailygoal.text.date) === activeWeek ? (
               <ShowDailyGoals

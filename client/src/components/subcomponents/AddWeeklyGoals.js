@@ -11,13 +11,14 @@ import { DialogContentText } from "@material-ui/core";
 import MenuItem from "@material-ui/core/MenuItem";
 
 const AddWeeklyGoals = ({
+  maxWId,
   items, // 목표를 선택하기 위한 객체
   input, // 인풋에 입력되는 객체
   activeWeek,
   onChangeField,
   onInsert,
   onInitializeForm,
-  onInitiateEditField
+  onInitiateEditField,
 }) => {
   let today = new Date();
   let dd = String(today.getDate()).padStart(2, "0");
@@ -31,23 +32,24 @@ const AddWeeklyGoals = ({
     timeToSpend: "",
     startRange: "",
     endRange: "",
-    memo: ""
+    memo: "",
   };
 
-  const onSubmit = e => {
+  const onSubmit = (e) => {
     e.preventDefault();
-    onInsert(input);
+    const newWGoal = { id: maxWId + 1, text: input, done: 0 };
+    onInsert(newWGoal);
     onInitializeForm({
-      form: "input"
+      form: "input",
     });
     handleClose();
   };
-  const onChange = e => {
+  const onChange = (e) => {
     const { value, name } = e.target;
     onChangeField({
       form: "input",
       key: name,
-      value
+      value,
     });
   };
   const [open, setOpen] = React.useState(false);
@@ -56,14 +58,14 @@ const AddWeeklyGoals = ({
     setOpen(true);
     onInitiateEditField({
       form: "input",
-      value: inputTemp
+      value: inputTemp,
     });
   };
 
   const handleClose = () => {
     setOpen(false);
     onInitializeForm({
-      form: "input"
+      form: "input",
     });
   };
 
@@ -85,7 +87,7 @@ const AddWeeklyGoals = ({
             defaultValue={activeWeek}
             onChange={onChange}
             InputProps={{
-              readOnly: true
+              readOnly: true,
             }}
           />
 
@@ -98,7 +100,7 @@ const AddWeeklyGoals = ({
             onChange={onChange}
             value={input.goal}
           >
-            {items.map(option => (
+            {items.map((option) => (
               <MenuItem key={option.id} value={option.text.goal}>
                 {option.text.goal}
               </MenuItem>

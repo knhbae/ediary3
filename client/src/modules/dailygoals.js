@@ -1,6 +1,6 @@
 import { createAction, handleActions } from "redux-actions";
 import produce from "immer";
-
+import { post } from "axios";
 const CHANGE_FIELD = "dailygoals/CHANGE_FIELD"; // 인풋 값을 변경함
 const INSERT = "dailygoals/INSERT"; // 새로운 item 를 등록함
 const TOGGLE = "dailygoals/TOGGLE"; // item 를 체크/체크해제 함
@@ -8,38 +8,38 @@ const REMOVE = "dailygoals/REMOVE"; // item 를 제거함
 const EDIT = "dailygoals/EDIT"; // item을 수정함
 const INITIALIZE_FORM = "dailygoals/INITIALIZE_FORM"; // 인풋을 초기화함
 const INITIATE_EDIT_FIELD = "dailygoals/INITIATE_EDIT_FIELD"; // Edit Input을 초기화함
+const READ_DB = "dailygoals/READ_DB"; // DB를 읽어옴
 
 export const changeField = createAction(
   CHANGE_FIELD,
   ({ form, key, value }) => ({
     form,
     key,
-    value
+    value,
   })
 );
 export const initiateEditField = createAction(
   INITIATE_EDIT_FIELD,
   ({ form, value }) => ({
     form,
-    value
+    value,
   })
 );
 
-let id = 7; // insert 가 호출 될 때마다 1씩 더해집니다.
-export const insert = createAction(INSERT, text => ({
-  id: id++,
+export const insert = createAction(INSERT, (text) => ({
   text,
-  done: false
 }));
 
-export const toggle = createAction(TOGGLE, id => id);
-export const remove = createAction(REMOVE, id => id);
+export const toggle = createAction(TOGGLE, (id) => id);
+export const remove = createAction(REMOVE, (id) => id);
 export const edit = createAction(EDIT, ({ id, text, done }) => ({
   id,
   text,
-  done
+  done,
 }));
-export const initializeForm = createAction(INITIALIZE_FORM, form => form);
+export const initializeForm = createAction(INITIALIZE_FORM, (form) => form);
+
+export const readDB = createAction(READ_DB, (dailygoallist) => dailygoallist);
 
 let today = new Date();
 let dd = String(today.getDate()).padStart(2, "0");
@@ -55,123 +55,139 @@ const initialState = {
     startRange: "",
     endRange: "",
     emotion: "",
-    memo: ""
+    memo: "",
   },
   dailygoals: [
     {
-      id: 1,
+      id: 0,
       text: {
-        date: "2020-03-22",
-        goal: "독서",
-        timeToSpend: "1",
-        startRange: "1",
-        endRange: "2",
-        emotion: "#행복",
-        memo: "aaa"
+        date: "",
+        goal: "",
+        timeToSpend: "",
+        startRange: "",
+        endRange: "",
+        emotion: "",
+        memo: "",
       },
-      done: false
+      done: 0,
     },
-    {
-      id: 2,
-      text: {
-        date: "2020-03-22",
-        goal: "영어",
-        timeToSpend: "10",
-        startRange: "1",
-        endRange: "2",
-        emotion: "#행복",
-        memo: "aaa"
-      },
-      done: false
+  ],
+};
+
+const addDGoal = (addedDGoal) => {
+  const url = "/api/addUserDGoal/";
+  // console.log(addedDGoal);
+  const formData = {
+    date: addedDGoal.text.date,
+    goal: addedDGoal.text.goal,
+    timeToSpend: addedDGoal.text.timeToSpend,
+    startRange: addedDGoal.text.startRange,
+    endRange: addedDGoal.text.endRange,
+    emotion: addedDGoal.text.emotion,
+    memo: addedDGoal.text.memo,
+  };
+  // console.log(formData);
+  const config = {
+    headers: {
+      "content-type": "application/json",
     },
-    {
-      id: 3,
-      text: {
-        date: "2020-03-23",
-        goal: "독서",
-        timeToSpend: "2",
-        startRange: "1",
-        endRange: "2",
-        emotion: "#행복",
-        memo: "aaa"
-      },
-      done: false
+  };
+  // console.log(formData);
+  return post(url, formData, config);
+};
+
+const deleteDGoal = (id) => {
+  const url = "/api/deleteDGoal/" + id;
+  fetch(url, {
+    method: "DELETE",
+  });
+};
+
+const editDGoal = (id, editedDGoal) => {
+  const url = "/api/editUserDGoal/" + id;
+  const formData = {
+    date: editedDGoal.date,
+    goal: editedDGoal.goal,
+    timeToSpend: editedDGoal.timeToSpend,
+    startRange: editedDGoal.startRange,
+    endRange: editedDGoal.endRange,
+    emotion: editedDGoal.emotion,
+    memo: editedDGoal.memo,
+  };
+  console.log(formData);
+  const config = {
+    headers: {
+      "content-type": "application/json",
     },
-    {
-      id: 4,
-      text: {
-        date: "2020-03-24",
-        goal: "운동",
-        timeToSpend: "10",
-        startRange: "1",
-        endRange: "2",
-        emotion: "#우울",
-        memo: "aaa"
-      },
-      done: false
-    },
-    {
-      id: 5,
-      text: {
-        date: "2020-03-24",
-        goal: "영어",
-        timeToSpend: "2",
-        startRange: "1",
-        endRange: "2",
-        emotion: "#화남",
-        memo: "aaa"
-      },
-      done: false
-    },
-    {
-      id: 6,
-      text: {
-        date: "2020-03-24",
-        goal: "수학",
-        timeToSpend: "2",
-        startRange: "1",
-        endRange: "2",
-        emotion: "#기쁨",
-        memo: "aaa"
-      },
-      done: false
-    }
-  ]
+  };
+  // console.log(formData);
+  return post(url, formData, config);
 };
 
 const dailygoals = handleActions(
   {
     [CHANGE_FIELD]: (state, { payload: { form, key, value } }) =>
-      produce(state, draft => {
+      produce(state, (draft) => {
         draft[form][key] = value;
       }),
     [INITIATE_EDIT_FIELD]: (state, { payload: { form, value } }) =>
-      produce(state, draft => {
+      produce(state, (draft) => {
         draft[form] = value;
       }),
     [INSERT]: (state, { payload: item }) =>
-      produce(state, draft => {
-        draft.dailygoals.push(item);
+      produce(state, (draft) => {
+        addDGoal(item.text);
+        draft.dailygoals.push(item.text);
       }),
     [TOGGLE]: (state, { payload: id }) =>
-      produce(state, draft => {
-        const item = draft.dailygoals.find(item => item.id === id);
+      produce(state, (draft) => {
+        const item = draft.dailygoals.find((item) => item.id === id);
         item.done = !item.done;
       }),
     [REMOVE]: (state, { payload: id }) =>
-      produce(state, draft => {
-        const index = draft.dailygoals.findIndex(item => item.id === id);
+      produce(state, (draft) => {
+        deleteDGoal(id);
+        const index = draft.dailygoals.findIndex((item) => item.id === id);
         draft.dailygoals.splice(index, 1);
       }),
     [EDIT]: (state, { payload: { id, text, done } }) =>
-      produce(state, draft => {
-        const index = draft.dailygoals.findIndex(item => item.id === id);
+      produce(state, (draft) => {
+        editDGoal(id, text);
+        const index = draft.dailygoals.findIndex((item) => item.id === id);
         draft.dailygoals.splice(index, 1, { id, text, done });
       }),
     [INITIALIZE_FORM]: (state, { payload: { form } }) =>
-      produce(state, draft => {
-        draft[form] = initialState.dailyinput;
-      })
+      produce(state, (draft) => {
+        if (form === "dailyinput") {
+          draft[form] = initialState.dailyinput;
+        } else if ((form = "dailygoals")) {
+          draft[form] = initialState.dailygoals;
+        }
+      }),
+    [READ_DB]: (state, { payload: dailygoallist }) =>
+      produce(state, (draft) => {
+        // console.log(dailygoallist);
+        for (var i = 0; i < dailygoallist.length; i++) {
+          if (dailygoallist[i].isdeleted === 0) {
+            let tempItem = {};
+            tempItem = {
+              id: dailygoallist[i].id,
+              text: {
+                date: dailygoallist[i].dodate,
+                goal: dailygoallist[i].goal,
+                timeToSpend: dailygoallist[i].timeToSpend,
+                startRange: dailygoallist[i].startRange,
+                endRange: dailygoallist[i].endRange,
+                emotion: dailygoallist[i].emotion,
+                memo: dailygoallist[i].memo,
+              },
+              done: dailygoallist[i].isdone,
+            };
+            // console.log(tempItem);
+            draft.dailygoals.push(tempItem);
+          }
+        }
+      }),
   },
   initialState
 );

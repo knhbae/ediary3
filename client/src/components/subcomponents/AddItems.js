@@ -12,10 +12,12 @@ import { DialogContentText } from "@material-ui/core";
 // import SelectDay from "./Functions/SelectDay";
 
 const AddItems = ({
+  maxId,
   newItem, // 인풋에 입력되는 객체
   onChangeField,
   onInsert,
-  onInitializeForm
+  onInitializeForm,
+  onReadDB,
 }) => {
   let today = new Date();
   let dd = String(today.getDate()).padStart(2, "0");
@@ -23,20 +25,21 @@ const AddItems = ({
   let yyyy = today.getFullYear();
   today = yyyy + "-" + mm + "-" + dd;
 
-  const onSubmit = e => {
+  const onSubmit = (e) => {
     e.preventDefault();
-    onInsert(newItem);
+    const item = { id: maxId + 1, text: newItem, done: false };
+    onInsert(item);
     onInitializeForm({
-      form: "newItem"
+      form: "newItem",
     });
     handleClose();
   };
-  const onChange = e => {
+  const onChange = (e) => {
     const { value, name } = e.target;
     onChangeField({
       form: "newItem",
       key: name,
-      value
+      value,
     });
   };
   const [open, setOpen] = React.useState(false);
@@ -48,7 +51,7 @@ const AddItems = ({
   const handleClose = () => {
     setOpen(false);
     onInitializeForm({
-      form: "newItem"
+      form: "newItem",
     });
   };
   return (
@@ -92,7 +95,7 @@ const AddItems = ({
             name="startDate"
             // value={input.startDate}
             InputLabelProps={{
-              shrink: true
+              shrink: true,
             }}
             onChange={onChange}
           />
@@ -107,7 +110,7 @@ const AddItems = ({
             name="endDate"
             // value={input.endDate}
             InputLabelProps={{
-              shrink: true
+              shrink: true,
             }}
             onChange={onChange}
           />

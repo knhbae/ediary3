@@ -13,14 +13,25 @@ const EditItems = ({
   onEdit,
   onChangeField,
   onInitializeForm,
-  onInitiateEditField
+  onInitiateEditField,
 }) => {
-  const onChange = e => {
+  const onSubmitEdit = (e) => {
+    // debugger;
+    e.preventDefault();
+    onEdit({
+      id: item.id,
+      text: newItem,
+      done: false,
+    });
+    handleClose();
+  };
+
+  const onChange = (e) => {
     const { value, name } = e.target;
     onChangeField({
       form: "newItem",
       key: name,
-      value
+      value,
     });
   };
   const [open, setOpen] = React.useState(false);
@@ -31,14 +42,14 @@ const EditItems = ({
     // const { name } = e.target;
     onInitiateEditField({
       form: "newItem",
-      value: item.text
+      value: item.text,
     });
   };
 
   const handleClose = () => {
     setOpen(false);
     onInitializeForm({
-      form: "newItem"
+      form: "newItem",
     });
   };
 
@@ -88,7 +99,7 @@ const EditItems = ({
             name="startDate"
             // value={newItem.startDate}
             InputLabelProps={{
-              shrink: true
+              shrink: true,
             }}
             onChange={onChange}
           />
@@ -101,7 +112,7 @@ const EditItems = ({
             name="endDate"
             // value={input.endDate}
             InputLabelProps={{
-              shrink: true
+              shrink: true,
             }}
             onChange={onChange}
           />
@@ -137,37 +148,7 @@ const EditItems = ({
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button
-            onClick={e => {
-              // debugger;
-              e.preventDefault();
-              onEdit({
-                id: item.id,
-                text: newItem,
-                done: false
-              });
-
-              console.log({
-                id: item.id,
-                text: {
-                  goal: newItem.goal,
-                  quantity: newItem.quantity,
-                  unit: newItem.unit,
-                  startDate: newItem.startDate,
-                  endDate: newItem.endDate,
-                  period: newItem.period,
-                  desc: newItem.desc,
-                  categoryTag: newItem.categoryTag
-                },
-                done: false
-              });
-              onInitializeForm({
-                form: "newItem"
-              });
-              handleClose();
-            }}
-            color="primary"
-          >
+          <Button onClick={onSubmitEdit} color="primary">
             Modify
           </Button>
         </DialogActions>

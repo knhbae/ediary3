@@ -11,13 +11,14 @@ import { DialogContentText } from "@material-ui/core";
 import MenuItem from "@material-ui/core/MenuItem";
 
 const AddDailyGoals = ({
+  maxDId,
   items, // 목표를 선택하기 위한 객체
   dailyinput, // 인풋에 입력되는 객체
   activeWeek,
   onChangeField,
   onInsert,
   onInitializeForm,
-  onInitiateEditField
+  onInitiateEditField,
 }) => {
   let today = new Date();
   let dd = String(today.getDate()).padStart(2, "0");
@@ -35,20 +36,22 @@ const AddDailyGoals = ({
   //     memo: ""
   //   };
 
-  const onSubmit = e => {
+  const onSubmit = (e) => {
     e.preventDefault();
-    onInsert(dailyinput);
+    const newDGoal = { id: maxDId + 1, text: dailyinput, done: 0 };
+    // console.log(newDGoal);
+    onInsert(newDGoal);
     onInitializeForm({
-      form: "dailyinput"
+      form: "dailyinput",
     });
     handleClose();
   };
-  const onChange = e => {
+  const onChange = (e) => {
     const { value, name } = e.target;
     onChangeField({
       form: "dailyinput",
       key: name,
-      value
+      value,
     });
   };
   const [open, setOpen] = React.useState(false);
@@ -64,7 +67,7 @@ const AddDailyGoals = ({
   const handleClose = () => {
     setOpen(false);
     onInitializeForm({
-      form: "dailyinput"
+      form: "dailyinput",
     });
   };
 
@@ -88,26 +91,39 @@ const AddDailyGoals = ({
             name="date"
             // value={input.startDate}
             InputLabelProps={{
-              shrink: true
+              shrink: true,
             }}
             onChange={onChange}
           />
 
-          <TextField
-            autoFocus
-            margin="dense"
-            select
-            label="한일"
-            name="goal"
-            onChange={onChange}
-            value={dailyinput.goal}
-          >
-            {items.map(option => (
-              <MenuItem key={option.id} value={option.text.goal}>
-                {option.text.goal}
-              </MenuItem>
-            ))}
-          </TextField>
+          {items.length === 1 ? (
+            <TextField
+              autoFocus
+              margin="dense"
+              label="한일"
+              name="goal"
+              defaultValue="'목표 등록'을 하세요"
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+          ) : (
+            <TextField
+              autoFocus
+              margin="dense"
+              select
+              label="한일"
+              name="goal"
+              onChange={onChange}
+              value={dailyinput.goal}
+            >
+              {items.map((option) => (
+                <MenuItem key={option.id} value={option.text.goal}>
+                  {option.text.goal}
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
 
           <TextField
             autoFocus

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import AddWeeklyGoals from "./subcomponents/AddWeeklyGoals";
 import ShowWeeklyGoals from "./subcomponents/ShowWeeklyGoals";
@@ -11,28 +12,29 @@ import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 // import { addISOWeekYears } from "date-fns";
 import currentWeekNumber from "current-week-number";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 500,
-    flexGrow: 1
+    flexGrow: 1,
   },
   header: {
     display: "flex",
     alignItems: "center",
     height: 50,
     paddingLeft: theme.spacing(4),
-    backgroundColor: theme.palette.background.default
+    backgroundColor: theme.palette.background.default,
   },
   img: {
     height: 255,
     maxWidth: 400,
     overflow: "hidden",
     display: "block",
-    width: "100%"
-  }
+    width: "100%",
+  },
 }));
 
 const WeeklyGoals = ({
+  maxWId,
   items, // select 하기 위한 객체
   input, // 인풋에 입력되는 객체
   weeklygoals, // 할 일 목록이 들어있는 객체
@@ -42,7 +44,8 @@ const WeeklyGoals = ({
   onRemove,
   onEdit,
   onInitializeForm,
-  onInitiateEditField
+  onInitiateEditField,
+  onReadDB,
 }) => {
   const classes = useStyles();
   const theme = useTheme();
@@ -58,16 +61,16 @@ const WeeklyGoals = ({
   const maxSteps = 1000;
 
   const handleNext = () => {
-    setActiveStep(prevActiveStep => prevActiveStep + 1);
-    setActiveWeek(prevActiveWeek => addWeek(prevActiveWeek));
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setActiveWeek((prevActiveWeek) => addWeek(prevActiveWeek));
   };
 
   const handleBack = () => {
-    setActiveStep(prevActiveStep => prevActiveStep - 1);
-    setActiveWeek(prevActiveWeek => minusWeek(prevActiveWeek));
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    setActiveWeek((prevActiveWeek) => minusWeek(prevActiveWeek));
   };
 
-  const addWeek = prevYyyyww => {
+  const addWeek = (prevYyyyww) => {
     const prevYyyy = prevYyyyww.substring(0, 4) * 1;
     const prevWw = prevYyyyww.substring(5, 7) * 1;
     let nextWw = prevWw === 52 ? 1 : prevWw + 1;
@@ -80,7 +83,7 @@ const WeeklyGoals = ({
     return nextYyyyww;
   };
 
-  const minusWeek = prevYyyyww => {
+  const minusWeek = (prevYyyyww) => {
     const prevYyyy = prevYyyyww.substring(0, 4) * 1;
     const prevWw = prevYyyyww.substring(5, 7) * 1;
     let nextWw = prevWw === 1 ? 52 : prevWw - 1;
@@ -94,10 +97,14 @@ const WeeklyGoals = ({
 
   return (
     <div className={classes.root}>
+      {/* {wgoal.map((wgoal) => (
+        <div key={wgoal.id}>{wgoal.id}</div>
+      ))} */}
       <Paper square elevation={0} className={classes.header}>
         <Typography>{activeWeek}</Typography>
       </Paper>
       <AddWeeklyGoals
+        maxWId={maxWId}
         items={items}
         input={input}
         activeWeek={activeWeek}
@@ -107,7 +114,7 @@ const WeeklyGoals = ({
         onInitiateEditField={onInitiateEditField}
       />
       <div>
-        {weeklygoals.map(weeklygoal => (
+        {weeklygoals.map((weeklygoal) => (
           <div key={weeklygoal.id}>
             {weeklygoal.text.yyyyww === activeWeek ? (
               <ShowWeeklyGoals

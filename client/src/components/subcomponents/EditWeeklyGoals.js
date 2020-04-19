@@ -15,14 +15,14 @@ const EditWeeklyGoals = ({
   onEdit,
   onChangeField,
   onInitializeForm,
-  onInitiateEditField
+  onInitiateEditField,
 }) => {
-  const onChange = e => {
+  const onChange = (e) => {
     const { value, name } = e.target;
     onChangeField({
       form: "input",
       key: name,
-      value
+      value,
     });
   };
   const [open, setOpen] = React.useState(false);
@@ -33,14 +33,14 @@ const EditWeeklyGoals = ({
     // const { name } = e.target;
     onInitiateEditField({
       form: "input",
-      value: weeklygoal.text
+      value: weeklygoal.text,
     });
   };
 
   const handleClose = () => {
     setOpen(false);
     onInitializeForm({
-      form: "input"
+      form: "input",
     });
   };
 
@@ -63,7 +63,7 @@ const EditWeeklyGoals = ({
             value={input.goal}
             onChange={onChange}
           >
-            {items.map(option => (
+            {items.map((option) => (
               <MenuItem key={option.id} value={option.text.goal}>
                 {option.text.goal}
               </MenuItem>
@@ -121,17 +121,17 @@ const EditWeeklyGoals = ({
             Cancel
           </Button>
           <Button
-            onClick={e => {
+            onClick={(e) => {
               // debugger;
               e.preventDefault();
               onEdit({
                 id: weeklygoal.id,
                 text: input,
-                done: false
+                done: 0,
               });
 
               onInitializeForm({
-                form: "input"
+                form: "input",
               });
               handleClose();
             }}

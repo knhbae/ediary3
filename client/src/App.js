@@ -37,21 +37,21 @@ function TabPanel(props) {
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired
+  value: PropTypes.any.isRequired,
 };
 
 function a11yProps(index) {
   return {
     id: `full-width-tab-${index}`,
-    "aria-controls": `full-width-tabpanel-${index}`
+    "aria-controls": `full-width-tabpanel-${index}`,
   };
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: theme.palette.background.paper
+    backgroundColor: theme.palette.background.paper,
     // width: 500
-  }
+  },
 }));
 
 const App = () => {
@@ -63,7 +63,7 @@ const App = () => {
     setValue(newValue);
   };
 
-  const handleChangeIndex = index => {
+  const handleChangeIndex = (index) => {
     setValue(index);
   };
   return (
@@ -90,9 +90,15 @@ const App = () => {
         >
           <TabPanel value={value} index={0} dir={theme.direction}>
             <DailyGoalsContainer />
+            <table Style="visibility:hidden">
+              <ItemsContainer />
+            </table>
           </TabPanel>
           <TabPanel value={value} index={1} dir={theme.direction}>
             <WeeklyGoalsContainer />
+            <table Style="visibility:hidden">
+              <ItemsContainer />
+            </table>
           </TabPanel>
           <TabPanel value={value} index={2} dir={theme.direction}>
             <ItemsContainer />

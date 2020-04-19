@@ -1,11 +1,10 @@
 import React from "react";
 import AddItems from "./subcomponents/AddItems";
-// import EditItems from "./HandleItems/EditItems";
 import ShowItems from "./subcomponents/ShowItems";
-// import DeleteItems from "./HandleItems/DeleteItems";
-// import Grid from "@material-ui/core/Grid";
+// import Test2 from "./Test2";
 
 const Items = ({
+  maxId,
   newItem, // 인풋에 입력되는 객체
   items, // 할 일 목록이 들어있는 객체
   onChangeField,
@@ -14,30 +13,36 @@ const Items = ({
   onRemove,
   onEdit,
   onInitializeForm,
-  onInitiateEditField
+  onInitiateEditField,
+  onReadDB,
 }) => {
   return (
     <div>
       <AddItems
+        maxId={maxId}
         newItem={newItem}
         onInsert={onInsert}
         onChangeField={onChangeField}
         onInitializeForm={onInitializeForm}
       />
       <div>
-        {items.map(item => (
-          <div key={item.id}>
-            <ShowItems
-              item={item}
-              onRemove={onRemove}
-              newItem={newItem}
-              onEdit={onEdit}
-              onChangeField={onChangeField}
-              onInitializeForm={onInitializeForm}
-              onInitiateEditField={onInitiateEditField}
-            />
-          </div>
-        ))}
+        {items.map((item) =>
+          item.id === 0 ? (
+            ""
+          ) : (
+            <div key={item.id}>
+              <ShowItems
+                item={item}
+                onRemove={onRemove}
+                newItem={newItem}
+                onEdit={onEdit}
+                onChangeField={onChangeField}
+                onInitializeForm={onInitializeForm}
+                onInitiateEditField={onInitiateEditField}
+              />
+            </div>
+          )
+        )}
       </div>
     </div>
   );
